@@ -14,7 +14,8 @@ const saveReviewNode = document.getElementById("save-review");
 const clearResponseNode = document.getElementById("clear-response");
 const reviewNode = document.getElementById("review");
 const reportNode = document.getElementById("report");
-
+const secDivNode = document.getElementById("sec-div");
+const menuNode = document.getElementById("menu");
 
 const mapping = {"physics":"p", "chemistry":"c", "mathematics":"m", "mcq":"a", "numerical":"b"}
 const choice = [];
@@ -24,6 +25,8 @@ let pDiv;
 let previousSubName = "ma";
 let currentq = {};
 let startTime;
+let intervalId2;
+let menuOpen = false;
 currentq.id = "1";
 
 async function getQuestions(name) {
@@ -42,7 +45,7 @@ async function getQuestions(name) {
 }
 
 function stopwatch() {
-    let timer = 610; //10800
+    let timer = 10800;
     let hr, min, sec;
     const timerNode = document.getElementById("timer");
     const intervalId1 = setInterval(() => {
@@ -71,6 +74,35 @@ function stopwatch() {
     timerNode.innerText = `3:00:00`
 }
 
+function qStopwatch(startTimer = 0) {
+    let min, sec, min2, sec2;
+    const timerNode = document.getElementById("q-timer");
+    intervalId2 = setInterval(() => {
+      startTimer += 1;
+      sec = startTimer;
+      min = Math.floor(startTimer/60);
+      min = min%60;
+      sec = startTimer - (min*60);
+      
+      try {
+      const displayMin = String(min).padStart(2, '0');
+      const displaySec = String(sec).padStart(2, '0');
+      timerNode.innerText = `${displayMin}:${displaySec}`;
+      } catch(err) {
+        console.log(err);
+        clearInterval(intervalId1);
+      }
+      }, 1000);
+      
+    sec2 = startTimer;
+    min2 = Math.floor(startTimer/60);
+    min2 = min2%60;
+    sec2 = startTimer - (min2*60);
+    const displayMin2 = String(min2).padStart(2, '0');
+    const displaySec2 = String(sec2).padStart(2, '0');
+    timerNode.innerText = `${displayMin2}:${displaySec2}`;
+}
+
 function kbdfn() {
   [...kbdNode.querySelectorAll("button")].forEach((e) => {
     e.addEventListener("click", () => keyboardinput(e.id));
@@ -93,12 +125,13 @@ function displayQuestion(i) {
   idNode.innerText = q.id;
   qDivNode.innerHTML = q.question;
   startTime = Date.now();
+  const p = choice.find(e => e.id == q.id);
   
   if (q.type == "mcq") {
     nDivNode.style.display = "none";
     oDivNode.style.display = "";
     [...oDivNode.querySelectorAll("pre")].forEach((e, index) => (e.innerHTML = q.options[index]));
-    const p = choice.find(e => e.id == q.id);
+  //  const p = choice.find(e => e.id == q.id);
     if (p && [0,1,2,3].includes(p.response)) {
       res = p.response;
       oDivNode.children[p.response].click();
@@ -110,12 +143,19 @@ function displayQuestion(i) {
   } else {
     oDivNode.style.display = "none";
     nDivNode.style.display = "";
-    const p = choice.find(e => e.id == q.id);
+ //   const p = choice.find(e => e.id == q.id);
     if (p) {
-      nInputNode.innerText = p.response;
+      nInputNode.innerText = p.response !== null ? p.response : "";
     } else {
       nInputNode.innerText = "";
     }
+  }
+  
+  clearInterval(intervalId2);
+  if (p) {
+    qStopwatch(p.time);
+  } else {
+    qStopwatch(0);
   }
   
   const subName = `${mapping[q.subject]}${mapping[q.type]}`;
@@ -125,6 +165,8 @@ function displayQuestion(i) {
     document.getElementById(subName).classList.add("active");
     previousSubName = subName;
   }
+  
+  
   
   if (q.id == questions.length) {
     nextNode.disabled = true;
@@ -146,7 +188,8 @@ function save() {
   if (currentq.type === "mcq") {
     responseValue = res;
   } else {
-    responseValue = Number(nInputNode.innerText);
+    const raw = nInputNode.innerText.trim();
+    responseValue = raw === "" ? null : Number(raw);
   }
   
   if (q) {
@@ -163,15 +206,91 @@ function save() {
 function updateTime() {
   const q = choice.find(e => e.id == currentq.id);
   if (q) {
-    q.time += Number((Date.now() - startTime)/1000);
+    q.time += parseInt((Date.now() - startTime)/1000);
   } else {
     choice.push({
       id: currentq.id,
       response: null,
-      time: Number((Date.now() - startTime)/1000)
+      time: parseInt((Date.now() - startTime)/1000)
     })
   }
 }
+
+function handleOutsideMenuClick(e) {
+  if (e.target !== secDivNode && e.target !== menuNode) {
+    document.getElementById("menu").click();
+  }
+}
+
+function handleMenuEscape(e) {
+  if (e.key === "Escape") document.getElementById("menu").click();
+}
+  
+function openMenu() {
+  if (menuOpen == true) {
+    closeMenu();
+    return;
+  }
+  
+ secDivNode.style.display = "block";
+ secDivNode.style.animation = "slideLeft 0.3s ease-in-out";
+  menuNode.innerText = "⟩";
+  window.addEventListener("click", handleOutsideMenuClick);
+  window.addEventListener("keydown", handleMenuEscape);
+  
+  menuOpen = true;
+  if (!questions) return;
+  const len = questions.length;
+  let el = "";
+  const ans = [];
+  const nans = [];
+  choice.forEach(e => {
+    if (e.response !== null) {
+      ans.push(e.id);
+    } else {
+      nans.push(e.id);
+    }
+    
+  })
+  
+  const ansr = ans.filter(e => {
+    if (review.includes(e)) return e;
+  });
+  
+  for (let i = 1; i <= len; i++) {
+    if (ansr.includes(i)) {
+      el += `<div class="num-box amfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    } else if (ans.includes(i)) {
+      el += `<div class="num-box a" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    } else if (review.includes(i)) {
+      el += `<div class="num-box mfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    } else if (nans.includes(i)) {
+      el += `<div class="num-box na" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    } else {
+      el += `<div class="num-box nv" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    }
+  }
+  
+  document.getElementById("a").innerText = ans.length;
+  document.getElementById("na").innerText = (questions.length - ans.length);
+  document.getElementById("nv").innerText = (questions.length - choice.length);
+  document.getElementById("mfr").innerText = (review.length - ansr.length);
+  document.getElementById("amfr").innerText = ansr.length;
+  document.getElementById("sec2").innerHTML = el;
+}
+
+function closeMenu() {
+ secDivNode.style.animation = "slideRight 0.3s ease-in-out";
+  menuNode.innerText = "⟨";
+  window.removeEventListener("click", handleOutsideMenuClick);
+  window.removeEventListener("keydown", handleMenuEscape);
+  setTimeout(() => {
+   secDivNode.style.display = "none";
+    menuOpen = false;
+  }, 300);
+}
+
+
 
 function getSubjectInitial() {
   const ma = questions.find(e => (e.subject == "mathematics" && e.type == "mcq")).id;
@@ -228,7 +347,8 @@ nextNode.addEventListener("click",() => {
   updateTime();
   displayQuestion(currentq.id+1)
 });
-reportNode.addEventListener("click", () => console.log(choice));
+reportNode.addEventListener("click", () => console.log(choice, review));
+document.getElementById("menu").addEventListener("click",function() { openMenu(); });
 
 kbdfn();
 displayQuestion(currentq.id);
