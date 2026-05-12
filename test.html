@@ -7,7 +7,7 @@
     
     <script src="js/test_script.js" defer></script> 
     
- <!--   <script>
+    <script>
       window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -24,7 +24,7 @@
       }
     };
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
   
   </head>
   
@@ -51,6 +51,7 @@
     <div id="content-div" style="">
       <section id="q-num">
       <h5>Question Number <span>1</span> </h5>
+      <div id="q-timer">15:30</div>
       <div>
         <div id="bookmark">B</div>
         <div id="report">R</div>
@@ -108,6 +109,15 @@
     </section>
     
     <aside id="sec-div">
+      <div id="sec1">
+        <div> <div id="nv" class="sec1-icon"></div><h5>Not Visited</h5></div>
+        <div> <div id="na" class="sec1-icon"></div><h5>Not Answered</h5></div>
+        <div> <div id="a" class="sec1-icon"></div><h5>Answered</h5></div>
+        <div> <div id="mfr" class="sec1-icon"></div><h5>Marked for Review</h5></div>
+        <div> <div id="amfr" class="sec1-icon"></div><h5>Answered & Marked for Review (will be considered for evaluation)</h5></div>
+      </div>
+      <div id="sec2"></div>
+      
     </aside>
     
     
