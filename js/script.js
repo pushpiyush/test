@@ -64,7 +64,7 @@ function examCard(name, image, num) {
 
 function testCard(year, date, num) {
   const month = monthNames[(Number(date.slice(0,2)))];
-  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="test.html">
+  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="https://github.com/piyushforcode/test/blob/main/test.html">
       <p class="result-preview"></p>
       <p class="test-year">${year}</p>
       <p class="test-date">${month} ${date.slice(2,4)}</p>
