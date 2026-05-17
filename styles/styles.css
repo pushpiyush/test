@@ -346,6 +346,35 @@ nav {
   overflow-y: scroll;
 }
 
+.skeleton-test-card {
+  width: 100%;
+  height: 60px;
+  margin: 10px 0;
+  padding: 3px;
+  background-color: #999999;
+  opacity: 1;
+  border-radius: 10px;
+  box-shadow: 1.5px 1.5px 4.9px #00000550;
+  position: relative;
+}
+
+.skeleton-test-card::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: " ";
+  width: 10%;
+  height: 60px;
+  background: linear-gradient(to right, #999999, #ccc,#999999);
+  border-radius: 10px;
+  animation: shimmer 1.7s ease-out infinite;
+}
+
+@keyframes shimmer {
+  from { transform: translateX(5%) skewX(-20deg); }
+  to   { transform: translateX(890%) skewX(-20deg); opacity: 0.3;.display: none;}
+}
+
 .test-card {
   display: grid;
   grid-template-rows: 1fr 4fr;

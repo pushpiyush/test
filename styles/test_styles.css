@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
 }
+
 html, body {
   margin: 0;
   height: 100%;
@@ -48,6 +49,7 @@ header {
 }
 
 #main-div {
+/*  position: relative;*/
   height: calc(100% - 4em);
 }
 
@@ -57,8 +59,8 @@ header {
   height: calc(100% - 4em);
   overflow-y: scroll;
   margin: 0px;
-  position: absolute;
   background: #fff;
+  position: absolute;
   border: 1px solid black;
   top: 4em;
   right: 0;
@@ -67,7 +69,6 @@ header {
 }
 
 #sec1 {
-  background: inherit;
   padding: 20px;
 }
 
@@ -257,7 +258,7 @@ nav {
 }
 
 #o-div div:hover {
-  border: 1.5px solid DodgerBlue;
+  border: 1.2px solid DodgerBlue;
 }
 
 #o-div div.clicked {
@@ -273,7 +274,7 @@ nav {
   font-size: 17px;
 }
 
-#o-div pre {
+#o-div p {
   display: inline-block;
   margin: 0;
   padding: 0;
@@ -402,3 +403,21 @@ nav {
   to {transform: translateX(450px);}
 }
 
+@media screen and (min-width: 768px) {
+  #menu {display: none;}
+  #container {
+    display: flex;
+    flex-direction: row;
+    align-items: bottom;
+    background: #620472;
+  }
+  #sec-div {
+    width: 30%;
+    height: 100%;
+    display: inline-block;
+    position: relative;
+    border: 1px solid black;
+    box-shadow: none;
+    background: #638919;
+  }
+}
