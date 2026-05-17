@@ -10,9 +10,9 @@ const filterTypeNode = document.getElementById("filter-type");
 const filterModalNode = document.getElementById("filter-modal");
 
 const exams = {
-  jee_mains: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
-  jee_advanced: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
-  neet: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
+  jee_mains: ["icons/jee_mains.webp", "icons/jee_mains.webp", "jm"],
+  jee_advanced: ["icons/jee_mains.webp", "icons/jee_mains.webp", "ja"],
+  neet: ["icons/jee_mains.webp", "icons/jee_mains.webp", "neet"],
   cuet: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
   bitsat: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
   viteee: ["icons/jee_mains.webp", "icons/jee_mains.webp"],
@@ -62,9 +62,11 @@ function examCard(name, image, num) {
   </div>`;
 }
 
-function testCard(year, date, num) {
+function testCard(year, date, num, name="jee_mains") {
+  name = "jee_mains";
   const month = monthNames[(Number(date.slice(0,2)))];
-  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test.html'">
+  const EXAM = `${exams[name][2]}${year}${date}`;
+  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test_preview.html#${EXAM}'">
       <p class="result-preview"></p>
       <p class="test-year">${year}</p>
       <p class="test-date">${month} ${date.slice(2,4)}</p>
@@ -83,7 +85,7 @@ function createExamCards(exams) {
   examNode.innerHTML = el;
 }
 
-function createTestCards(tests, order="dsc") {
+function createTestCards(tests, order="dsc",name = "jee_mains") {
   let el = "";
   let yr = "";
   let total = Object.values(tests).reduce((total, arr) => total + arr.length, 0);
@@ -92,15 +94,28 @@ function createTestCards(tests, order="dsc") {
     tests[y].forEach((v) => {
       if (order=="dsc") {
         num = Math.min(total, 20);
-        el =  testCard(y, v, num) + el;
+        el =  testCard(y, v, num, name) + el;
       } else {
-        el +=  testCard(y, v, num);
+        el +=  testCard(y, v, num, name);
         num += 1;
       }
       total -= 1;
     });
   }
   testNode.innerHTML = el;
+}
+
+function skeletonTestCards() {
+  const el = `<div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><p style="text-align: center; color: #000000cc;">Loading Data ...</p>`
+  testNode.innerHTML = el;
+}
+
+const SKELETON = {
+  pd: "Loading Data ...",
+  el: (b) => {return `<div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><p style="text-align: center; color: #000000cc;">${b}</p>`},
+  node: function() { testNode.innerHTML = this.el(this.pd); this.intervalId3},
+  intervalId3: setInterval(() => {this.pd = "Taking longer than usual..."; this.node; this.clear;}, 3000),
+  clear: clearInterval(this.intervalId3)
 }
 
 function createYearFilter(tests, year=false) {
@@ -164,13 +179,14 @@ async function openExamDetail(name, his=true) {
   }
   
   changeExamName(name);
-  
+//  skeletonTestCards();
+  SKELETON.node();
   console.log(`Fetching data for ${name}`);
   let time = Date.now();
   testDate = await getTestDate(name);
   console.log(`Data Fetched Successfully.\nTime taken: ${Date.now() - time}ms\ntestDate:`, testDate);
   
-  createTestCards(testDate);
+  createTestCards(testDate, "dsc" , name);
   createYearFilter(testDate);
   createYearOptions(testDate);
 }
@@ -344,14 +360,13 @@ function yearOptionsSelect() {
     }
   }
   
-  function allYearOptionsSelect(t) {
+function allYearOptionsSelect(t) {
     if (t.checked) {
       Array.from(document.querySelectorAll("input[name=yf]")).forEach((e) => {e.checked = true});
     } else {
       Array.from(document.querySelectorAll("input[name=yf]")).forEach((e) => {e.checked = false});
     }
   }
-
 
 
 /*
@@ -385,7 +400,7 @@ To create options for Year in #filter-modal.
 
 
 
-/* 
+/*
 ----------------------    TO   DO    ----------------------
 1. Fetching data from server takes time and while those time, the previous-intro test cards are still there. Replace them with skeleton screens with shimmer effect.
 
