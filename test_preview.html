@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1.0">
+    <title>TEST PREVIEW</title>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>GENERAL INSTRUCTIONS</h1>
+      <select>
+        Your default Language
+        <option>English</option>
+      </select> 
+    </header>
+    <section>
+      <h4>Please read the instructions carefully</h4>
+      <h5>General Instructions:</h5>
+      <ol type="1" start="1">
+        <li>Total Duration of <span id="e-name"></span> is 180 min.</li>
+        <li>The clock will be set at your broswer's local storage. The countdown timer in the top left corner of screen will display the remaining time available for you to complete the examination. When the timer reaches zero, the examination will end by itself.</li>
+        <li>The Questions Palette displayed on the right side of screen will show the status of each question using one of the following symbols:
+          <ol>
+            <li>You have not visited the question yet.</li>
+            <li>You have not answered the question.</li>
+            <li>You have answered the question.</li>
+            <li>You have NOT answered the question, but have marked the question for review.</li>
+            <li>The question(s) "Answered and Marked for Review" will be considered for evalution.</li>
+          </ol>
+        </li>
+        <li>You can click on the ">" arrow which apperes to the right of exam name to collapse the question palette thereby maximizing the question window. To view the question palette again, you can click on "<" which appears on the right side of exam name.</li>
+        <li>You can click on  to navigate to the bottom and  to navigate to top of the question are, without scrolling.</li>
+      </ol>
+      <h5>Navigating to a Question</h5>
+      <ol type="1" start="6">
+        <li>To answer a question, do the following:
+        <ol type="a">
+          <li>Click on the question number in the Question Palette at the right of your screen to go to that numbered question directly. Note that using this option does NOT save your answer to the current question.</li>
+          <li>Click on <strong>Save & Next</strong> to save your answer for the current question and then go to the next question.</li>
+          <li>Click on <strong>Mark for Review & Next</strong> to save your answer for the current question, mark it for review, and then go to the next question.</li>
+        </ol>
+        </li>
+      </ol>
+      <h5>Answering a Question</h5>
+      <ol type="1" start="7">
+        <li>Procedure for answering a multiple choice type question:
+          <ol type="a">
+            <li>To select you answer, click on the button of one of the options.</li>
+            <li>To deselect your chosen answer, click on the button of the chosen option again or click on the <strong>Clear Response </strong>button</li>
+            <li>To change your chosen answer, click on the button of another option</li>
+            <li>To save your answer, you MUST click on the Save & Next button.</li>
+            <li>To mark the question for review, click on the Mark for Review & Next button.</li>
+          </ol></li>
+          <li>To change your answer to a question that has already been answered, first select that question for answering and then follow the procedure for answering that type of question.</li>
+      </ol>
+      <h5>Navigating through sections</h5>
+      <ol type="1" start="9">
+        <li>Sections in this question paper are displayed on the top bar of the screen. Questions in a section can be viewed by click on the section name. The section you are currently viewing is highlighted.</li>
+        <li>After click the Save & Next button on the last question for a section, you will automatically be taken to the first question of the next section.</li>
+        <li>You can shuffle between sections and questions anything during the examination as per your convenience only during the time stipulated.</li>
+        <li>Candidate can view the corresponding section summery as part of the legend that appears in every section above the question palette.</li>
+      </ol>
+    </section>
+    <section>
+      <label for="check">
+        <input type="checkbox" id="check">
+        I have read and understood the instructions. <span class="dim">All computer hardware allotted to me are in proper working condition. I declare that I am not in possession of / not wearing / not carrying any prohibited gadget like mobile phone, bluetooth devices etc. /any prohibited material with me into the Examination Hall. I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this Test and/or to disciplinary action, which may include ban from future Tests / Examinations</span></label>
+    </section>
+    <section>
+      <button id="button" type="button">PROCEED</button>
+    </section>
+    
+    <style>
+      html, body {
+        margin: 0px;
+      }
+      
+      * {
+        box-sizing: border-box;
+      }
+      
+     header {
+       height: 4em;
+       width: 100vw;
+       background: orange;
+       padding: 8px 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      h1 {
+        margin: 0px;
+        padding: 0px;
+        color: #000000de;
+        font-size: 25px;
+      }
+      
+      section {
+        width: 100%;
+        border-bottom: 1px solid #00000020;
+        padding: 10px 15px;
+        margin: 0 auto;
+      }
+      
+      select {
+        background: white;
+      }
+      
+      h4 {
+        text-align: center;
+        font-size: 17px;
+        color: #000000de;
+      }
+      
+      h5 {
+        text-decoration: underline 1.5px;
+        font-size: 15px;
+        margin: 20px 0 0;
+        color: #000000de;
+      }
+      
+      ol {
+        margin-top: 10px;
+      }
+      
+      li, label {
+        color: #000000cc;
+        font-size: 13px;
+      }
+      
+      button {
+        display: block;
+        margin: 10px auto;
+        background: #008000cc;
+        width: 200px;
+        height: 30px;
+        border: none;
+        color: white;
+        font-weight: 600;
+      }
+      
+      button:not-disabled button:hover {
+        background: #008000;
+        border: 1px solid black;
+      }
+      
+      :disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+      
+    </style>
+    <script>
+      const MONTH = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const EXAM_LIST = {"jm": "JEE Mains", "ja": "JEE Advanced", "n": "NEET"};
+      const EXAM = window.location.hash.substring(1) || "jm2026040802";
+      let name = ""
+      EXAM.match(/\D/g).forEach((e) => name += e);
+      for (let a in EXAM_LIST) { if (a == name) name = EXAM_LIST[a]};
+      let year = EXAM.slice(-10, -6);
+      let month = MONTH[Number(EXAM.slice(-6, -4))];
+      const EXAM_NAME = `${name} ${EXAM.slice(-4,-2)} ${month} ${year} Shift-${EXAM.slice(-2)}`;
+      
+      async function loadData() {
+        const buttonNode = document.getElementById("button");
+        buttonNode.innerText = "Downloading Questions ...";
+        buttonNode.disabled = true;
+        buttonNode.style.fontWeight = "400";
+        try {
+          console.log(`Fetching data...`);
+          let time = Date.now();
+          const response = await fetch(`https://raw.githubusercontent.com/piyushforcode/test/main/json/${EXAM}.json`);
+          console.log(`Data Fetched Successfully.\nTime taken: ${Date.now() - time}ms`);
+          if (response.ok) {
+            buttonNode.innerText = "Getting Questions Ready...";
+            console.log(`Compressing data...`);
+            time = Date.now();
+            const text = await response.text();
+            const questions = JSON.parse(text);
+            sessionStorage.setItem('questions', LZString.compress(JSON.stringify(questions)));
+            console.log(`Data Compressed Successfully.\nTime taken: ${Date.now() - time}ms`);
+            buttonNode.style.fontWeight = "600";
+            buttonNode.innerText = "Proceed";
+            buttonNode.disabled = false;
+          } else {
+            sessionStorage.setItem("questions", "");
+            buttonNode.innerText = `Error ${response.value}`;
+          }
+        } catch (err) {
+          console.log(`Error in fetching ${EXAM}.json: \n`+err.message);
+          buttonNode.innerText = "Error in Fetching Data";
+        }
+      }
+      
+      loadData();
+      document.getElementById("e-name").innerText = EXAM_NAME;
+      document.getElementById("button").addEventListener("click", () => {
+        const check = document.getElementById("check").checked;
+        if (check) {
+          window.location.replace(`test.html#${EXAM}`);
+        } else {
+          window.alert("Please Accept Terms & Condition");
+        }
+      });
+      
+      
+    </script>
+  </body>
+</html>
