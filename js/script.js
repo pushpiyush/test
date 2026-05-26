@@ -121,39 +121,40 @@ function createTestCards(tests, order="dsc",name = "jee_mains") {
 
 const SKELETON = {
   pd: "Loading Data ...",
-  intervalId3: null,
-  intervalId4: null,
+  timeoutId3: null,
+  timeoutId4: null,
+  
   el: function(text) {
+    const cards = Array(7).fill('<div class="skeleton-test-card"></div>').join('');
     return `
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
-      <div class="skeleton-test-card"></div>
+      ${cards}
       <p style="text-align: center; color: var(--ptext); font-size: 14px;">${text}</p>
     `;
   },
+  
   main: function() {
     testNode.innerHTML = this.el(this.pd);
-    this.intervalId3 = setTimeout(() => {
+    this.timeoutId3 = setTimeout(() => {
       this.pd = "Taking longer than usual...";
       testNode.innerHTML = this.el(this.pd);
     }, 3000);
-    this.intervalId4 = setTimeout(() => {
+    
+    this.timeoutId4 = setTimeout(() => {
       this.pd = "Give a cheers for your patience...";
       testNode.innerHTML = this.el(this.pd);
     }, 10000);
   },
+  
   clear: function() {
-    if (this.intervalId3) {
-      clearTimeout(this.intervalId3);
-      this.intervalId3 = null;
-    } else if (this.intervalId4) {
-      clearTimeout(this.intervalId4);
-      this.intervalId4 = null;
+    if (this.timeoutId3) {
+      clearTimeout(this.timeoutId3);
+      this.timeoutId3 = null;
     }
+    if (this.timeoutId4) {
+      clearTimeout(this.timeoutId4);
+      this.timeoutId4 = null;
+    }
+    this.pd = "Loading Data ...";
   }
 };
 
