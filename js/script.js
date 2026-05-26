@@ -225,7 +225,7 @@ async function openExamDetail(name, his=true) {
   let time = Date.now();
   testDate = await getTestDate(name);
   console.log(`Data Fetched Successfully.\nTime taken: ${Date.now() - time}ms\ntestDate:`, testDate);
-//  SKELETON.clear();
+  SKELETON.clear();
   
   createTestCards(testDate, "dsc" , name);
   createYearFilter(testDate);
