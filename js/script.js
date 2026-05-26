@@ -39,7 +39,7 @@ let testDate = intro;
 
 async function getTestDate(name) {
   try {
-    const response = await fetch(`https://raw.githubusercontent.com/piyushforcode/piyushforcode/main/${name}_date.json`);
+    const response = await fetch(`https://raw.githubusercontent.com/pushpiyush/test/json/${name}_date.json`);
     if (response.ok) {
       const text = await response.text();
       const result = JSON.parse(text);
@@ -56,22 +56,36 @@ const monthNames = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "
 
 function examCard(name, image, num) {
   const name2 = name.replace("_", " ").toUpperCase();
-  return `<div class="exam-card" title=${name} onclick=examCardClick(this) style="background-color: var(--ecard${num})">
+  return `<div class="exam-card" title=${name} onclick=examCardClick(this)>
     <img src=${image}>
     <h4>${name2}</h4>
   </div>`;
+  
+  //style="background-color: var(--ecard${num})
 }
 
 function testCard(year, date, num, name="jee_mains") {
   name = "jee_mains";
   const month = monthNames[(Number(date.slice(0,2)))];
   const EXAM = `${exams[name][2]}${year}${date}`;
-  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test_preview.html#${EXAM}'">
+  /*return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test_preview.html#${EXAM}'">
       <p class="result-preview"></p>
       <p class="test-year">${year}</p>
       <p class="test-date">${month} ${date.slice(2,4)}</p>
       <p class="test-shift">Shift ${date.slice(5)}</p>
       <img src="icons/arrow_right.svg">
+    </div>`*/
+  return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test_preview.html#${EXAM}'">
+        <div class="test-img"><img src="../icons/jee_mains9.png" style="width: 100%; height: 100%;"></div>
+        <div class="test-body">
+          <div class="test-date">${date.slice(2,4)} ${month}</div>
+          <div class="test-year">${year}</div>
+        </div>
+        <div class="result-preview"></div>
+        <div class="test-right">
+          <span class="test-shift">Shift ${date.slice(5)}</span>
+          <span class="test-arrow">→</span>
+        </div>
     </div>`
 }
 
@@ -105,32 +119,58 @@ function createTestCards(tests, order="dsc",name = "jee_mains") {
   testNode.innerHTML = el;
 }
 
-function skeletonTestCards() {
-  const el = `<div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><p style="text-align: center; color: #000000cc;">Loading Data ...</p>`
-  testNode.innerHTML = el;
-}
-
 const SKELETON = {
   pd: "Loading Data ...",
-  el: (b) => {return `<div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><div class="skeleton-test-card"></div><p style="text-align: center; color: #000000cc;">${b}</p>`},
-  node: function() { testNode.innerHTML = this.el(this.pd); this.intervalId3},
-  intervalId3: setInterval(() => {this.pd = "Taking longer than usual..."; this.node; this.clear;}, 3000),
-  clear: clearInterval(this.intervalId3)
-}
+  intervalId3: null,
+  intervalId4: null,
+  el: function(text) {
+    return `
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <div class="skeleton-test-card"></div>
+      <p style="text-align: center; color: var(--ptext); font-size: 14px;">${text}</p>
+    `;
+  },
+  main: function() {
+    testNode.innerHTML = this.el(this.pd);
+    this.intervalId3 = setTimeout(() => {
+      this.pd = "Taking longer than usual...";
+      testNode.innerHTML = this.el(this.pd);
+    }, 3000);
+    this.intervalId4 = setTimeout(() => {
+      this.pd = "Give a cheers for your patience...";
+      testNode.innerHTML = this.el(this.pd);
+    }, 10000);
+  },
+  clear: function() {
+    if (this.intervalId3) {
+      clearTimeout(this.intervalId3);
+      this.intervalId3 = null;
+    } else if (this.intervalId4) {
+      clearTimeout(this.intervalId4);
+      this.intervalId4 = null;
+    }
+  }
+};
+
 
 function createYearFilter(tests, year=false) {
   let yr = "";
   for (let y in tests) {
     if (year && y==year) {
-      yr = `<p title="${y}" onclick="selectYearFilter(this.title)" style="border: 1px solid black">${y}</p>` + yr;
+      yr = `<p title="${y}" onclick="selectYearFilter(this.title)" class="active">${y}</p>` + yr;
     } else {
       yr = `<p title="${y}" onclick="selectYearFilter(this.title)">${y}</p>` + yr;
     }
   }
   if (!year) {
-    yr = `<p title="Reset" onclick="" style="opacity: 60%">Reset</p>` + yr;
+    yr = `<p title="Reset" class="reset" onclick="">Reset</p>` + yr;
   } else {
-    yr = `<p title="Reset" onclick="selectYearFilter(this.title)">Reset</p>` + yr;
+    yr = `<p title="Reset" class="reset active" onclick="selectYearFilter(this.title)">Reset</p>` + yr;
   }
   
   selectYearNode.innerHTML = yr;
@@ -142,11 +182,11 @@ function changeExamName(name) {
   myDiv.style.animation = "godown 0.5s ease-in";
   setTimeout((() => {
     myDiv.textContent = `${name2}`;
-    myDiv.style.color = "var(--accent)";
+    myDiv.style.color = "var(--ptext)";
     myDiv.style.animation = " comedown 0.5s ease-out";
   }), 500);
   setTimeout((() => {
-    myDiv.style.borderBottom = "2px solid var(--accent)";
+    myDiv.style.borderBottom = "2px solid var(--brand)";
   }), 1000);
   navExamNode.title = `${name}`;
 }
@@ -167,7 +207,7 @@ async function openExamDetail(name, his=true) {
 
   examNode.classList.add("hide");
   examDetailNode.classList.remove("hide");
-  examDetailNode.firstElementChild.setAttribute("src", exams[name][1]);
+  examDetailNode.firstElementChild.firstElementChild.setAttribute("src", exams[name][1]);
   examDetailNode.parentElement.getElementsByTagName("h3")[0].textContent = name.replace("_", " ").toUpperCase();
   document.head.appendChild(style);
   
@@ -179,14 +219,15 @@ async function openExamDetail(name, his=true) {
   }
   
   changeExamName(name);
-//  skeletonTestCards();
-  SKELETON.node();
+  SKELETON.main();
+  
   console.log(`Fetching data for ${name}`);
   let time = Date.now();
   testDate = await getTestDate(name);
   console.log(`Data Fetched Successfully.\nTime taken: ${Date.now() - time}ms\ntestDate:`, testDate);
+//  SKELETON.clear();
   
-  createTestCards(testDate, "dsc" , name);
+//  createTestCards(testDate, "dsc" , name);
   createYearFilter(testDate);
   createYearOptions(testDate);
 }
@@ -291,15 +332,15 @@ function openFilterModal() {
     filterNode.style.animation = "rotatex-anticlock 0.2s"
     applyFilter();
     setTimeout(() => {
-      filterNode.innerHTML = `Filters<img src="icons/filter_list.svg">`;
+      filterNode.innerHTML = `Filter<span class="material-symbols-outlined">filter_list</span>`;
       filterNode.style.animation = "rotatex-anticlock2 0.2s"}, 200);
     filterModalNode.style.maxHeight = "0px";
   } else {
     filterNode.style.animation = "rotatex-clock 0.2s"
     setTimeout(() => {
-      filterNode.innerHTML = `OK<img src="icons/filter_list_inv.svg">`;
+      filterNode.innerHTML = `Apply<span class="material-symbols-outlined" style="transform: rotate(180deg);">filter_list</span>`;
       filterNode.style.animation = "rotatex-clock2 0.2s"}, 200);
-    filterModalNode.style.maxHeight = "400px";
+    filterModalNode.style.maxHeight = "300px";
   }
   filterModalOpen = !filterModalOpen;
 }
@@ -343,10 +384,11 @@ function applyFilter() {
 }
 
 function createYearOptions(test) {
-  let yr = `<label><input id="all-year" type="checkbox" name="reset" value="all" checked onclick="allYearOptionsSelect(this)">All</label>`;
+  let yr = "";
   for (let y in test) {
     yr = `<label><input type="checkbox" name="yf" value="${y}" checked onclick="yearOptionsSelect()">${y}</label>` + yr;
   }
+  yr = `<label><input id="all-year" type="checkbox" name="reset" value="all" checked onclick="allYearOptionsSelect(this)">All</label><label></label>` + yr;
   document.getElementById("years-options").innerHTML = yr;
 }
 
