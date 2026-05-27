@@ -403,7 +403,7 @@ nav {
   to {transform: translateX(450px);}
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 208px) {
   #menu {display: none;}
   #container {
     display: flex;
