@@ -37,9 +37,10 @@ const intro = {
 }
 let testDate = intro;
 
+// https://raw.githubusercontent.com/pushpiyush/test/refs/heads/main/json/${name}_date.json
 async function getTestDate(name) {
   try {
-    const response = await fetch(`https://raw.githubusercontent.com/pushpiyush/test/refs/heads/main/json/${name}_date.json`);
+    const response = await fetch(`/json/${name}_date.json`);
     if (response.ok) {
       const text = await response.text();
       const result = JSON.parse(text);

@@ -17,7 +17,7 @@ const reportNode = document.getElementById("report");
 const secDivNode = document.getElementById("sec-div");
 const menuNode = document.getElementById("menu");
 
-const questions = /*JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) || */qns;
+const questions = /*JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) ||*/ qns;
 const mapping = {"physics":"p", "chemistry":"c", "mathematics":"m", "mcq":"a", "numerical":"b"}
 const choice = [];
 let review = [];
