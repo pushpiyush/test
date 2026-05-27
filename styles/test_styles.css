@@ -155,6 +155,11 @@ header {
   bottom: 3px;
   right: 3px;
 }
+
+.current {
+  border: 1px solid orange;
+}
+
 #sec1 h5 {
   margin: auto 0px;
   font-weight: 500;

@@ -150,8 +150,8 @@ function displayQuestion(i) {
     previousSubName = subName;
   }
   
-  
-  
+  MENU.toggleCurrentClass(currentq.id);
+
   if (q.id == questions.length) {
     nextNode.disabled = true;
   } else {
@@ -198,17 +198,20 @@ function updateTime() {
       time: parseInt((Date.now() - startTime)/1000)
     })
   }
+
+  MENU.toggleCurrentClass(currentq.id);
+  if (window.matchMedia("screen and (min-width: 200px)").matches) MENU.updateQuestionBox(currentq.id);
 }
 
-function handleOutsideMenuClick(e) {
-  if (e.target !== secDivNode && e.target !== menuNode) {
-    document.getElementById("menu").click();
-  }
-}
+// function handleOutsideMenuClick(e) {
+//   if (e.target !== secDivNode && e.target !== menuNode) {
+//     document.getElementById("menu").click();
+//   }
+// }
 
-function handleMenuEscape(e) {
-  if (e.key === "Escape") document.getElementById("menu").click();
-}
+// function handleMenuEscape(e) {
+//   if (e.key === "Escape") document.getElementById("menu").click();
+// }
   
 // function openMenu() {
 //   if (menuOpen == true) {
@@ -279,6 +282,7 @@ const MENU = {
   isOpen: false,
 
   toggle: function() {
+    if (window.matchMedia("screen and (min-width: 200px)").matches) return;
     if (this.isOpen == true) {
       this.close();
     } else {
@@ -349,7 +353,7 @@ const MENU = {
 
     for (let i = 1; i <= len; i++) {
       let class2 = this._getClassName(i, ans, nans, ansr);
-      el += `<div class="num-box ${class2}" onclick="displayQuestion(${i}); document.getElementById('menu').click();" title="${i}">${i}</div>`;
+      el += `<div class="num-box ${class2}" onclick="updateTime(); displayQuestion(${i}); document.getElementById('menu').click();" title="${i}">${i}</div>`;
     }
     
     document.getElementById("sec2").innerHTML = el;
@@ -360,8 +364,9 @@ const MENU = {
     const box = document.querySelector(`#sec2 div[title="${qId}"]`);
     const { ans, nans, ansr } = this._getQuestionStates();
     let class2 = this._getClassName(qId, ans, nans, ansr);
+    console.log(class2, ansr);
 
-    box.outerHTML = `<div class="num-box ${class2}" onclick="displayQuestion(${qId}); document.getElementById('menu').click();" title="${qId}">${qId}</div>`;
+    box.outerHTML = `<div class="num-box ${class2}" onclick="updateTime(); displayQuestion(${qId}); document.getElementById('menu').click();" title="${qId}">${qId}</div>`;
     this._updateSummaryCounts(ans, ansr);
   },
 
@@ -375,8 +380,9 @@ const MENU = {
     if (e.target !== secDivNode && e.target !== menuNode) {
       document.getElementById("menu").click();
     }
-  }
+  },
 
+  toggleCurrentClass: function(id) {document.querySelector(`#sec2 div[title="${id}"]`)?.classList.toggle('current')}
 };
 
 function getSubjectInitial() {
@@ -444,6 +450,7 @@ clearResponseNode.addEventListener("click", () => {
 });
 reviewNode.addEventListener("click", () => {
   review.push(currentq.id);
+  console.log(currentq.id, review);
   nextNode.click();
 });
 backNode.addEventListener("click",() => {
@@ -460,3 +467,4 @@ document.getElementById("menu").addEventListener("click",function() { MENU.toggl
 kbdfn();
 displayQuestion(currentq.id);
 stopwatch();
+if (window.matchMedia("screen and (min-width: 200px)").matches) MENU.createQuestionBoxes();
