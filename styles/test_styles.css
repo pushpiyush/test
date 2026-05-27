@@ -50,6 +50,7 @@ header {
 
 #main-div {
 /*  position: relative;*/
+  /* width: 100%; */
   height: calc(100% - 4em);
 }
 
@@ -85,7 +86,9 @@ header {
 
 .sec1-icon {
   width: 35px;
+  min-width: 35px;
   height: 35px;
+  min-height: 35px;
   line-height: 35px;
   margin-right: 5px;
   box-shadow: 1px 1px 7px #ffffff99 inset;
@@ -96,6 +99,8 @@ header {
 .num-box {
   height: 35px;
   width: 35px;
+  min-height: 35px;
+  min-width: 35px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -161,23 +166,31 @@ header {
 }
 
 nav {
-  height: 2em;
-  width: 100%;
   margin-bottom: 1px;
-  overflow: hidden;
-  border-bottom: 1px solid;
+  overflow: visible;
+  border-bottom: 0.5px solid;
 }
 
 #subnames {
+  min-height: 2em;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
+  align-items: stretch;
   overflow-x: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#subnames::-webkit-scrollbar {
+  display: none;
 }
 
 #subnames > div {
-  border: 1px solid black;
+  width: calc(100% / 6);
+  min-width: 100px;
+  border: 0.5px solid ;
   font-size: 11.5px;
-  align-self: center;
   text-align: center;
   padding: 3px;
 }
@@ -225,7 +238,7 @@ nav {
 }
 
 #content-div {
-  height: calc(100vh - 13.9em - 10px);
+  height: calc(100vh - 13.9em - 15px);
   overflow-y: scroll;
   padding-bottom: 30px;
 }
@@ -321,14 +334,16 @@ nav {
   grid-row: 4;
 }
 #res-button {
-  position: absolute;
-  bottom: calc(2.4em + 10px);
+  position: static;
+  /* bottom: calc(2.4em + 10px); */
   padding: 5px;
-  left: 0;
+  /* left: 0; */
   width: 100%;
   border-top: 1px solid;
-  height: 5.5em;
-  background: white;
+  /* height: auto;
+  min-height: 5.5em; */
+  /* height: 7.5vh; */
+  background: inherit;
 }
 
 #res-button button {
@@ -357,9 +372,9 @@ nav {
   color: white;
 }
 #nav-button {
-  position: fixed;
+  /* position: relative;
   bottom: 0px;
-  left: 0px;
+  left: 0px; */
   width: 100%;
   height: calc(2.4em + 10px);
   display: flex;
@@ -403,21 +418,31 @@ nav {
   to {transform: translateX(450px);}
 }
 
-@media screen and (min-width: 208px) {
+@media screen and (min-width: 200px) {
   #menu {display: none;}
   #container {
+    /* position: relative; */
     display: flex;
     flex-direction: row;
-    align-items: bottom;
-    background: #620472;
+    align-items: stretch;
+    height: calc(100vh - 4em);
   }
-  #sec-div {
-    width: 30%;
-    height: 100%;
-    display: inline-block;
+
+  #main-div {
+    height: auto;
+    width: 75%;
     position: relative;
+    /* background: #465497; */
+  }
+
+  #sec-div {
+    width: 25%; /*30*/
+    height: auto;
+    display: block;
+    position: relative;
+    top: 0;
     border: 1px solid black;
     box-shadow: none;
-    background: #638919;
+    /* background: #638919; */
   }
 }

@@ -210,69 +210,174 @@ function handleMenuEscape(e) {
   if (e.key === "Escape") document.getElementById("menu").click();
 }
   
-function openMenu() {
-  if (menuOpen == true) {
-    closeMenu();
-    return;
-  }
+// function openMenu() {
+//   if (menuOpen == true) {
+//     closeMenu();
+//     return;
+//   }
   
- secDivNode.style.display = "block";
- secDivNode.style.animation = "slideLeft 0.3s ease-in-out";
-  menuNode.innerText = "⟩";
-  window.addEventListener("click", handleOutsideMenuClick);
-  window.addEventListener("keydown", handleMenuEscape);
+//   secDivNode.style.animation = "slideLeft 0.3s ease-in-out";
+//   secDivNode.style.display = "block";
+//   menuNode.innerText = "⟩";
+//   window.addEventListener("click", handleOutsideMenuClick);
+//   window.addEventListener("keydown", handleMenuEscape);
   
-  menuOpen = true;
-  if (!questions) return;
-  const len = questions.length;
-  let el = "";
-  const ans = [];
-  const nans = [];
-  choice.forEach(e => {
-    if (e.response !== null) {
-      ans.push(e.id);
+//   menuOpen = true;
+//   if (!questions) return;
+//   const len = questions.length;
+//   let el = "";
+//   const ans = [];
+//   const nans = [];
+//   choice.forEach(e => {
+//     if (e.response !== null) {
+//       ans.push(e.id);
+//     } else {
+//       nans.push(e.id);
+//     }
+    
+//   })
+  
+//   const ansr = ans.filter(e => {
+//     if (review.includes(e)) return e;
+//   });
+  
+//   for (let i = 1; i <= len; i++) {
+//     if (ansr.includes(i)) {
+//       el += `<div class="num-box amfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+//     } else if (ans.includes(i)) {
+//       el += `<div class="num-box a" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+//     } else if (review.includes(i)) {
+//       el += `<div class="num-box mfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+//     } else if (nans.includes(i)) {
+//       el += `<div class="num-box na" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+//     } else {
+//       el += `<div class="num-box nv" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+//     }
+//   }
+  
+//   document.getElementById("a").innerText = ans.length;
+//   document.getElementById("na").innerText = (questions.length - ans.length);
+//   document.getElementById("nv").innerText = (questions.length - choice.length);
+//   document.getElementById("mfr").innerText = (review.length - ansr.length);
+//   document.getElementById("amfr").innerText = ansr.length;
+//   document.getElementById("sec2").innerHTML = el;
+// }
+
+
+// function closeMenu() {
+//  secDivNode.style.animation = "slideRight 0.3s ease-in-out";
+//   menuNode.innerText = "⟨";
+//   window.removeEventListener("click", handleOutsideMenuClick);
+//   window.removeEventListener("keydown", handleMenuEscape);
+//   setTimeout(() => {
+//    secDivNode.style.display = "none";
+//     menuOpen = false;
+//   }, 300);
+// }
+
+const MENU = {
+  isOpen: false,
+
+  toggle: function() {
+    if (this.isOpen == true) {
+      this.close();
     } else {
-      nans.push(e.id);
+      this.open();
+    }
+  },
+
+  close: function() {
+    menuNode.innerText = "⟨";
+    secDivNode.style.animation = "slideRight 0.3s ease-in-out";
+    window.removeEventListener("keydown", MENU._handleMenuEscape);
+    window.removeEventListener("click", MENU._handleOutsideMenuClick);
+    setTimeout(() => {
+     secDivNode.style.display = "none";
+      this.isOpen = false;
+    }, 300);
+  },
+
+  open: function() {
+    secDivNode.style.animation = "slideLeft 0.3s ease-in-out";
+    secDivNode.style.display = "block";
+    menuNode.innerText = "⟩";
+    window.addEventListener("click", MENU._handleOutsideMenuClick);
+    window.addEventListener("keydown", MENU._handleMenuEscape);
+    
+    this.isOpen = true;
+    if (!questions) return;
+    this.createQuestionBoxes();
+  },
+
+  _getQuestionStates: function() {
+    const ans = [];
+    const nans = [];
+    
+    choice.forEach(e => {
+      if (e.response !== null) {
+        ans.push(e.id);
+      } else {
+        nans.push(e.id);
+      }
+    });
+
+    const ansr = ans.filter(e => review.includes(e));
+
+    return { ans, nans, ansr };
+  },
+
+  _getClassName: function(qId, ans, nans, ansr) {
+    if (ansr.includes(qId)) return "amfr";
+    if (ans.includes(qId)) return "a";
+    if (review.includes(qId)) return "mfr";
+    if (nans.includes(qId)) return "na";
+    return "nv";
+  },
+
+  _updateSummaryCounts: function(ans, ansr) {
+    document.getElementById("a").innerText = ans.length;
+    document.getElementById("na").innerText = (questions.length - ans.length);
+    document.getElementById("nv").innerText = (questions.length - choice.length);
+    document.getElementById("mfr").innerText = (review.length - ansr.length);
+    document.getElementById("amfr").innerText = ansr.length;
+  },
+
+  createQuestionBoxes: function() {
+    const len = questions.length;
+    let el = "";
+    const { ans, nans, ansr } = this._getQuestionStates();
+
+    for (let i = 1; i <= len; i++) {
+      let class2 = this._getClassName(i, ans, nans, ansr);
+      el += `<div class="num-box ${class2}" onclick="displayQuestion(${i}); document.getElementById('menu').click();" title="${i}">${i}</div>`;
     }
     
-  })
-  
-  const ansr = ans.filter(e => {
-    if (review.includes(e)) return e;
-  });
-  
-  for (let i = 1; i <= len; i++) {
-    if (ansr.includes(i)) {
-      el += `<div class="num-box amfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
-    } else if (ans.includes(i)) {
-      el += `<div class="num-box a" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
-    } else if (review.includes(i)) {
-      el += `<div class="num-box mfr" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
-    } else if (nans.includes(i)) {
-      el += `<div class="num-box na" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
-    } else {
-      el += `<div class="num-box nv" onclick="displayQuestion(${i}); document.getElementById('menu').click();">${i}</div>`;
+    document.getElementById("sec2").innerHTML = el;
+    this._updateSummaryCounts(ans, ansr);
+  },
+
+  updateQuestionBox: function(qId) {
+    const box = document.querySelector(`#sec2 div[title="${qId}"]`);
+    const { ans, nans, ansr } = this._getQuestionStates();
+    let class2 = this._getClassName(qId, ans, nans, ansr);
+
+    box.outerHTML = `<div class="num-box ${class2}" onclick="displayQuestion(${qId}); document.getElementById('menu').click();" title="${qId}">${qId}</div>`;
+    this._updateSummaryCounts(ans, ansr);
+  },
+
+  _handleOutsideMenuClick: function(e) {
+    if (e.target !== secDivNode && e.target !== menuNode) {
+      document.getElementById("menu").click();
+    }
+  },
+
+  _handleMenuEscape: function(e) {
+    if (e.target !== secDivNode && e.target !== menuNode) {
+      document.getElementById("menu").click();
     }
   }
-  
-  document.getElementById("a").innerText = ans.length;
-  document.getElementById("na").innerText = (questions.length - ans.length);
-  document.getElementById("nv").innerText = (questions.length - choice.length);
-  document.getElementById("mfr").innerText = (review.length - ansr.length);
-  document.getElementById("amfr").innerText = ansr.length;
-  document.getElementById("sec2").innerHTML = el;
-}
 
-function closeMenu() {
- secDivNode.style.animation = "slideRight 0.3s ease-in-out";
-  menuNode.innerText = "⟨";
-  window.removeEventListener("click", handleOutsideMenuClick);
-  window.removeEventListener("keydown", handleMenuEscape);
-  setTimeout(() => {
-   secDivNode.style.display = "none";
-    menuOpen = false;
-  }, 300);
-}
+};
 
 function getSubjectInitial() {
   const ma = questions.find(e => (e.subject == "mathematics" && e.type == "mcq")).id;
@@ -350,7 +455,7 @@ nextNode.addEventListener("click",() => {
   displayQuestion(currentq.id+1)
 });
 reportNode.addEventListener("click", () => console.log(choice, review));
-document.getElementById("menu").addEventListener("click",function() { openMenu(); });
+document.getElementById("menu").addEventListener("click",function() { MENU.toggle(); });
 
 kbdfn();
 displayQuestion(currentq.id);

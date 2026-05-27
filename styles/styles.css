@@ -210,7 +210,7 @@ nav {
 #exam-section {
   /*background-image: linear-gradient(to bottom, var(--bgcolor), var(--sectioncolor));*/
  /* height: calc(22vh + 42px + 3.17em); /*recalculate height*/ 
-  max-height: calc(292px + 3.17em);
+  /*max-height: calc(292px + 3.17em);
   min-height: calc(192px + 3.17em);*/
   width: 100%;
   margin: 50px 0 0 0;
@@ -571,7 +571,7 @@ nav {
 
 @keyframes shimmer {
   from { transform: translateX(10%) skewX(-20deg); }
-  to   { transform: translateX(880%) skewX(-20deg); opacity: 0.3;.display: none;}
+  to   { transform: translateX(880%) skewX(-20deg); opacity: 0.3; display: none;}
 }
 
 .test-cards {
