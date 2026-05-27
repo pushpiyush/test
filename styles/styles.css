@@ -147,6 +147,7 @@ body, html {
   margin: 0;
   background-color: var(--bgcolor);
   color: var(--ptext);
+  cursor: default;
 }
 
 ::-webkit-scrollbar {

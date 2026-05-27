@@ -314,7 +314,14 @@ nav {
   margin: 10px auto 20px;
   font-size: 20px;
   overflow-x: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
+#n-input::-webkit-scrollbar {
+  display: none;
+}
+
 
 #kbd {
   margin: auto;
