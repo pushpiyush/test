@@ -77,7 +77,7 @@ function testCard(year, date, num, name="jee_mains") {
       <img src="icons/arrow_right.svg">
     </div>`*/
   return `<div class="test-card" style="animation: slidedown 0.3s ${(num-1)*testCardDisplayDelay}s both" onclick="window.location.href='test_preview.html#${EXAM}'">
-        <div class="test-img"><img src="../icons/jee_mains9.png" style="width: 100%; height: 100%;"></div>
+        <div class="test-img"><img src="/icons/jee_mains9.png" style="width: 100%; height: 100%;"></div>
         <div class="test-body">
           <div class="test-date">${date.slice(2,4)} ${month}</div>
           <div class="test-year">${year}</div>
