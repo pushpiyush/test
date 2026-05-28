@@ -17,19 +17,22 @@ const reportNode = document.getElementById("report");
 const secDivNode = document.getElementById("sec-div");
 const menuNode = document.getElementById("menu");
 
-const questions = /*JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) ||*/ qns;
+const questions = JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) || qns;
+console.log(questions);
 const mapping = {"physics":"p", "chemistry":"c", "mathematics":"m", "mcq":"a", "numerical":"b"}
-const choice = [];
-let review = [];
-let res;
-let pDiv;
+const choice = []; //it contains objects of type {id, response, time} for each question attempted/viewed by the student. response is either option number for mcq or input string for numerical type
+let review = [];   //it contains ids of questions marked for review
+let res;           //it stores the currently selected option for mcq type question. It is null for numerical type questions or no selected option for mcq. res means resonse.
+let pDiv;          //it stores the currently selected option div for mcq type question. It is null for numerical type questions or no selected option for mcq. pDiv means previous div.
 let previousSubName = "ca";
-let currentq = {};
-let startTime;
-let intervalId2;
-let menuOpen = false;
-currentq.id = "1";
+let currentq = {};  //it stores the currently displayed question object
+let startTime;      //it stores the time at which the current question is displayed. It is used to calculate the time spent on each question.
+let intervalId2;    //it stores the interval id for question stopwatch so that it can be cleared when question is changed.
+let menuOpen = false;  //it stores the state of menu (open or closed). not in use currently.
+currentq.id = "1";   //initially displaying question 1
 
+
+//to start the stopwatch for the entire test duration 
 function stopwatch() {
     let timer = 10800;
     let hr, min, sec;
@@ -60,6 +63,7 @@ function stopwatch() {
     timerNode.innerText = `3:00:00`
 }
 
+//to start the stopwatch for each question. It takes startTimer as argument which is the time already spent on that question (in seconds) if the question is being revisited.
 function qStopwatch(startTimer = 0) {
     let min, sec, min2, sec2;
     const timerNode = document.getElementById("q-timer");
@@ -364,7 +368,6 @@ const MENU = {
     const box = document.querySelector(`#sec2 div[title="${qId}"]`);
     const { ans, nans, ansr } = this._getQuestionStates();
     let class2 = this._getClassName(qId, ans, nans, ansr);
-    console.log(class2, ansr);
 
     box.outerHTML = `<div class="num-box ${class2}" onclick="updateTime(); displayQuestion(${qId}); document.getElementById('menu').click();" title="${qId}">${qId}</div>`;
     this._updateSummaryCounts(ans, ansr);
@@ -386,15 +389,15 @@ const MENU = {
 };
 
 function getSubjectInitial() {
-  const ma = questions.find(e => (e.subject == "mathematics" && e.type == "mcq")).id;
-  const mb = questions.find(e => (e.subject == "mathematics" && e.type == "numerical")).id;
-  const pa = questions.find(e => (e.subject == "physics" && e.type == "mcq")).id;
-  const pb = questions.find(e => (e.subject == "physics" && e.type == "numerical")).id;
-  const ca = questions.find(e => (e.subject == "chemistry" && e.type == "mcq")).id;
-  const cb = questions.find(e => (e.subject == "chemistry" && e.type == "numerical")).id;
+  const ma = questions.find(e => (e.subject == "mathematics" && e.type == "mcq"))?.id;
+  const mb = questions.find(e => (e.subject == "mathematics" && e.type == "numerical"))?.id;
+  const pa = questions.find(e => (e.subject == "physics" && e.type == "mcq"))?.id;
+  const pb = questions.find(e => (e.subject == "physics" && e.type == "numerical"))?.id;
+  const ca = questions.find(e => (e.subject == "chemistry" && e.type == "mcq"))?.id;
+  const cb = questions.find(e => (e.subject == "chemistry" && e.type == "numerical"))?.id;
   
   Object.entries({ ma, mb, pa, pb, ca, cb }).forEach(([name, value]) => {
-    document.getElementById(name).addEventListener("click", () => {
+    document.getElementById(name)?.addEventListener("click", () => {
       updateTime();
       displayQuestion(value);
     });
@@ -450,7 +453,6 @@ clearResponseNode.addEventListener("click", () => {
 });
 reviewNode.addEventListener("click", () => {
   review.push(currentq.id);
-  console.log(currentq.id, review);
   nextNode.click();
 });
 backNode.addEventListener("click",() => {
