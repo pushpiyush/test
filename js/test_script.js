@@ -17,8 +17,8 @@ const reportNode = document.getElementById("report");
 const secDivNode = document.getElementById("sec-div");
 const menuNode = document.getElementById("menu");
 
-const questions = JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) || qns;
-console.log(questions);
+const questions = /*JSON.parse(LZString.decompress(sessionStorage.getItem('questions'))) || */qns;
+//console.log(questions);
 const mapping = {"physics":"p", "chemistry":"c", "mathematics":"m", "mcq":"a", "numerical":"b"}
 const choice = []; //it contains objects of type {id, response, time} for each question attempted/viewed by the student. response is either option number for mcq or input string for numerical type
 let review = [];   //it contains ids of questions marked for review
@@ -120,7 +120,9 @@ function displayQuestion(i) {
   if (q.type == "mcq") {
     nDivNode.style.display = "none";
     oDivNode.style.display = "";
-    [...oDivNode.querySelectorAll("p")].forEach((e, index) => (e.innerHTML = q.options[index]));
+    console.log([...oDivNode.querySelectorAll("p")]);
+    console.log("pDiv:", pDiv);
+    [...oDivNode.querySelectorAll("p")].forEach((e, index) => {e.innerHTML = `${index}: ${q.options[index]}`; console.log(index, ":", q.options[index]);});
     if (p && [0,1,2,3].includes(p.response)) {
       res = p.response;
       oDivNode.children[p.response].click();
